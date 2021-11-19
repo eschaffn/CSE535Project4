@@ -20,4 +20,5 @@ def serve_query_data():
     content = json.loads(content)
     results = App.fetchResults(content)
     print(json.dumps(results))
+    print(type(json.dumps(results)))
     return json.dumps(results)
