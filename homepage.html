@@ -3,22 +3,108 @@
     <head>
         <script src="front_end.js"></script>
         <script src="ajax.js"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta charset="utf-8"/>
         <style>
-            h1 {text-align: center;}
-            
+
+            h3 {
+                text-align: center;
+                font-family: 'Trebuchet MS', sans-serif;
+                color: white;
+            }
+            .names {
+                font-family: 'Trebuchet MS', sans-serif;
+                text-align: center;
+                font-size: 20px;
+                font-weight: bolder;
+                flex-basis: 10%;
+                color: white;
+            }
+            .center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .topnav .search-container {
+                margin-left: 41%;
+                margin-right: auto;
+                align-items: center;
+                padding-bottom: 0px;
+                
+            }
+
+            .topnav input[type=text] {
+                padding: 6px;
+                margin-top: 8px;
+                font-size: 17px;
+                border: none;
+                height: 20px;
+                width: 250px;
+                border-radius: 30px;
+            }
+
+            .topnav .search-container button {
+                padding: 6px 10px;
+                margin-top: 8px;
+                margin-left: 10px;
+                margin-right: 16px;
+                background: #ddd;
+                font-size: 17px;
+                border-radius: 30px;
+                border: none;
+                cursor: pointer;
+            }
+
+            .results {
+                display: flex;
+                float:  none;
+                font-family: 'Trebuchet MS', sans-serif;
+                padding: 10px 0;
+                text-align: left;
+                color: white
+                
+            }
+            .background {
+                background-image: url(Images/chalkboard.jpg);
+                background-repeat: no-repeat;
+                background-size:100%;
+            }
         </style>
     </head>
-    <body>
+    <body class ="background">
         <title>LEMMA Search</title>
-        <h1>LEMMA Search Engine</h1>
+
+        <img src = "Images/logo.png" width = "400" height = "150" class = "center">
+
         <br>
-        <p>Search: <input type="text" id="searchbar"></p>
-        <button onClick="sendQuery();" >Search!</button>
-
-        <div id='results'>
-
+        <h3>Created by: </h3> 
+        <div>
+        <p class="names">
+            <span style = "color:#db3236; font-size: 24px;">E</span>den,
+            <span style = "color:#f4c20d; font-size: 24px;">M</span>ichael,
+            <span style = "color:#4885ed; font-size: 24px;">M</span>agali,
+            <span style = "color:#3cba54; font-size: 24px;">A</span>li
+        </p>
         </div>
+        <div class="topnav">
+        <div class ="search-container">
+            <input type="text" placeholder="Search..." id='searchbar'>
+            <button type="submit" onClick="sendQuery();" id="button1"><i class="fa fa-search"></i></button>
+        </div>
+        </div>
+        <br>
+        <div id='results'></div>
+        <script>
+            var input = document.getElementById("searchbar");
+            input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("button1").click();
+            }
+            });
+        </script>
     </body>
 
 

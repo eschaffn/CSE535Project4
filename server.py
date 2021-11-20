@@ -14,6 +14,14 @@ def serve_front_end():
 def serve_AJAX():
     return bottle.static_file("ajax.js", root = '')
 
+@bottle.route("/Images/logo.png")
+def serve_logo():
+    return bottle.static_file("Images/logo.png", root = '')
+
+@bottle.route("/Images/chalkboard.jpg")
+def background():
+    return bottle.static_file("Images/chalkboard.jpg", root = '')
+
 @bottle.post("/search")
 def serve_query_data():
     content = bottle.request.body.read().decode()
