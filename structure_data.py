@@ -1,6 +1,6 @@
-import copy
-import torch
 import json
+import copy
+import CheapLinAlg as cla
 
 
 class Node:
@@ -62,22 +62,22 @@ class Graph:
 
     def calc_tr(self):
         node_labels = [n.label for n in self.nodes]
-        rows = [[0 for x in self.nodes] for x in self.nodes]
+        og_mat = cla.CheapSquareMatrix(node_labels)
 
-        # rows[b][a] != 0 => b quote-tweets a
+        # rows[a][b] != 0 => a quote-tweets b
         for (a, b) in self.qts:
-            rows[node_labels.index(b)][node_labels.index(a)] += self.w_q
+            og_mat.update_entry(a, b, og_mat.get_entry(a, b) + self.w_q)
 
-        # rows[b][a] != 0 => b retweets a
+        # rows[a][b] != 0 => a retweets b
         for (a, b) in self.rts:
-            rows[node_labels.index(b)][node_labels.index(a)] += self.w_r
+            og_mat.update_entry(a, b, og_mat.get_entry(a, b) + self.w_r)
 
-        # rows[b][a] != 0 => b comments on a
+        # rows[a][b] != 0 => a comments on b
         for (a, b) in self.comments:
-            rows[node_labels.index(b)][node_labels.index(a)] += self.w_c
+            og_mat.update_entry(a, b, og_mat.get_entry(a, b) + self.w_c)
 
-        rows_copy = copy.deepcopy(rows)
-        btr_vals = self.find_steady_vec(rows)
+        og_mat_copy = copy.deepcopy(og_mat)
+        btr_vals = self.find_steady_vec(og_mat)
 
         for i in range(len(btr_vals)):
             self.index[node_labels[i]].btr = btr_vals[i]
@@ -86,37 +86,31 @@ class Graph:
             for m in [x for x in self.nodes if not x == n]:
                 if (n.label, m.label) in self.hashtags.keys():
                     wgt = self.hashtags[(n.label, m.label)] * self.w_h
-                    rows_copy[node_labels.index(n.label)][node_labels.index(m.label)] += wgt * m.beta(n)
-                    rows_copy[node_labels.index(n.label)][node_labels.index(m.label)] += wgt * n.beta(m)
+                    og_mat_copy.update_entry(n.label, m.label, og_mat.get_entry(n.label, m.label) + (wgt * m.beta(n)))
+                    og_mat_copy.update_entry(m.label, n.label, og_mat.get_entry(m.label, n.label) + (wgt * n.beta(m)))
 
-        tr_vals = self.find_steady_vec(rows_copy)
+        tr_vals = self.find_steady_vec(og_mat_copy)
 
         for i in range(len(tr_vals)):
             self.index[node_labels[i]].tr = tr_vals[i]
 
     def find_steady_vec(self, mat):
-        zeros = [0 for x in self.nodes]
+        for x in mat.row_index.keys():
+            total = 0
 
-        for i in range(len(mat)):
-            if mat[i] == zeros:
-                mat[i] = [(1 / len(self.nodes)) for x in self.nodes]
-            else:
-                row_sum = 0
+            for y in mat.row_index[x].keys():
+                total += mat.row_index[x][y]
 
-                for elem in mat[i]:
-                    row_sum += elem
+            for y in mat.row_index[x].keys():
+                mat.row_index[x][y] = mat.row_index[x][y] / total
 
-                for j in range(len(mat[i])):
-                    mat[i][j] = mat[i][j] / row_sum
-
-        init_vec = torch.tensor([(1 / len(self.nodes)) for x in self.nodes], dtype=torch.float32)
-        weight_matrix = torch.tensor([[(self.teleport / len(self.nodes)) for x in self.nodes] for x in self.nodes], dtype=torch.float32)
-        transition_matrix = torch.tensor(mat, dtype=torch.float32)
-        transition_matrix = torch.mul(transition_matrix, torch.tensor([1 - self.teleport], dtype=torch.float32))
-        transition_matrix = torch.add(transition_matrix, weight_matrix)
+        mat.scalar_mul(1 - self.teleport)
+        mat.add_matrix_of_ns(self.teleport / len(self.nodes))
+        init_vec = cla.CheapVector(mat.elems)
+        init_vec.add_uniform_vec(1 / len(self.nodes))
 
         for i in range(50):
-            init_vec = torch.mul(transition_matrix, init_vec)
+            init_vec = mat.as_linear_map(init_vec, right=False)
 
         return init_vec.tolist()
 
