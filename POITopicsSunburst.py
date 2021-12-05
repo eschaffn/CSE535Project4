@@ -84,12 +84,12 @@ def getIds(Dic1,Dic2):
     #For each key in dic1, for each value in key, append key - value
     for k in Dic1.keys():
         for v in Dic1[k]:
-            list_of_ids.append(k + '-' + v)
+            list_of_ids.append(k + ' - ' + v)
             
     #For each key in dic2, for each value in key, append key - value
     for k in Dic2.keys():
         for v in Dic2[k]:
-            list_of_ids.append(k + '-' + v)
+            list_of_ids.append(k + ' - ' + v)
             
     return list_of_ids
 
