@@ -22,6 +22,7 @@ def getEmotions():
         emotions.append(e)
     return emotions
 
+
 def updateJsonFile():
     jsonFile = open("tweet_TR.json", "r") 
     data = json.load(jsonFile) 
