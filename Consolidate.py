@@ -1,5 +1,6 @@
 import json
 
+#PUT NEW FILEPATH HERE
 fp = 'C:/Users/mjsul/Desktop/'
 
 
@@ -28,7 +29,7 @@ if __name__ == "__main__":
                 'stance': index_ling[k]['stance'],
             })
 
-        out.append(index_tr[k])
+            out.append(index_tr[k])
 
     with open(fp + 'tweets.json', 'w') as f3:
         json.dump(out, f3)
