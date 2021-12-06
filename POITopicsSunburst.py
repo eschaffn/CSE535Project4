@@ -3,36 +3,9 @@
 
 import json
 
-jsonFile = open("tweets_emoSentTopics2.json", "r") 
+jsonFile = open("tweets_no_dups.json", "r") 
 docs = json.load(jsonFile)
 jsonFile.close()
-
-'''
-# Dic1 = {“Country”:[list_of_pois],“Country”:[list_of_pois],“Country”:[list_of_pois]}
-
-Dic1 = {"USA": ["POTUS", "SpeakerPelosi", "SenTedCruz", "CDCgov", "GavinNewsom"], 
-"Mexico": ["SSalud_mx", "VicenteFoxQue", "lopezobrador_", "Claudiashein", "caroviggiano"], 
-"India": ["MoHFW_INDIA","narendramodi", "AmitShah", "ArvindKejriwal", "smritiirani"]}
-'''
-'''
-# Dic2 = {“POI”:[list_of_topics],…,“POI”:[list_of_topics]}
-
-Dic2 = {
-"POTUS": ["Topic1", "Topic2", "Topic3"],
-"”SpeakerPelosi": [], 
-"SenTedCruz": [], 
-"CDCgov": [],
-"SSalud_mx": [], 
-"VicenteFoxQue": [], 
-"“lopezobrador_": [], 
-"Claudiashein": [], 
-"“caroviggiano": [],
-"MoHFW_INDIA": [],
-"narendramodi": [], 
-"AmitShah": [], 
-"ArvindKejriwal": [], 
-"smritiirani": []}
-'''
 
 def getDic1(docs):
     
@@ -44,9 +17,9 @@ def getDic1(docs):
         if tweet['poi_name'] != '':
             if tweet['country'] == 'USA' and tweet['poi_name'] not in usa_pois:
                 usa_pois.append(tweet['poi_name'])
-            elif tweet['country'] == 'Mexico' and tweet['poi_name'] not in mex_pois:
+            elif tweet['country'] == 'MEXICO' and tweet['poi_name'] not in mex_pois:
                 mex_pois.append(tweet['poi_name'])
-            elif tweet['country'] == 'India' and tweet['poi_name'] not in ind_pois:
+            elif tweet['country'] == 'INDIA' and tweet['poi_name'] not in ind_pois:
                 ind_pois.append(tweet['poi_name'])
     
     Dic1 = {"USA": usa_pois,
