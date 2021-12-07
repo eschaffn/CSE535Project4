@@ -3,7 +3,7 @@
 
 import json
 
-jsonFile = open("tweets_emoSent.json", "r") 
+jsonFile = open("tweets9_10.json", "r") 
 data = json.load(jsonFile) 
 jsonFile.close()
 
@@ -67,15 +67,11 @@ def pieData():
         val = getValues(emotion)
         values.append(val)
         
-    data = [{
+    data = {
         'values': values,
         'labels': labels,
         'type': 'pie'
-    }]
-    layout = {
-        'height': 400,
-        'width': 500
     }
 
-    return data, layout
+    return data
 

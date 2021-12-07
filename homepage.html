@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="front_end.js"></script>
-        <script src="ajax.js"></script>
+        <script src="Static/Homepage.js"></script>
+        <script src="Static/ajax.js"></script>
+        <script src="https://cdn.plot.ly/plotly-2.6.3.min.js"></script>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta charset="utf-8"/>
@@ -12,6 +13,26 @@
                 text-align: center;
                 font-family: 'Trebuchet MS', sans-serif;
                 color: white;
+            }
+            .results_hr {
+                border-top: 2px solid rgba(255, 253, 253, 0.171);
+            }
+            a:link {
+                color:#4885ed;
+                background-color: transparent;
+                text-decoration: none;
+            }
+
+            a:visited {
+                color:#4885ed;
+                background-color: transparent;
+                text-decoration: none;
+            }
+
+            a:hover {
+                color:#2058b8;
+                background-color: transparent;
+                text-decoration: none;
             }
             .names {
                 font-family: 'Trebuchet MS', sans-serif;
@@ -26,18 +47,48 @@
                 margin-left: auto;
                 margin-right: auto;
             }
+            .topnav {
+                overflow: hidden;
+                background-color: rgba(169, 169, 169, 0.473);
+                margin-right: auto;
+                border-radius: 30px;
+                opacity: 70%;
+                }
 
-            .topnav .search-container {
-                margin-left: 41%;
+            .topnav a {
+                float: left;
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+                font-size: 17px;
+            }
+
+            .topnav a:hover {
+                background-color: #ddd;
+                color: black;
+
+            }
+
+            .topnav a.active {
+                background-color: #2196F3;
+                color: white;
+            }
+
+            .search-container {
+                margin-left: 40%;
                 margin-right: auto;
                 align-items: center;
                 padding-bottom: 0px;
                 
             }
 
-            .topnav input[type=text] {
+            .search-container [type=text] {
                 padding: 6px;
                 margin-top: 8px;
+                margin-right: auto;
+                margin-left: auto;
                 font-size: 17px;
                 border: none;
                 height: 20px;
@@ -45,7 +96,7 @@
                 border-radius: 30px;
             }
 
-            .topnav .search-container button {
+            .search-container button {
                 padding: 6px 10px;
                 margin-top: 8px;
                 margin-left: 10px;
@@ -57,45 +108,259 @@
                 cursor: pointer;
             }
 
-            .results {
+            .responseCounter {
                 display: flex;
                 float:  none;
                 font-family: 'Trebuchet MS', sans-serif;
+                font-weight: 900;
+                font-size: 14px;
+                padding: 10px 0;
+                text-align: center;
+                color: whitesmoke;
+                margin-left: 18px;
+                
+            }
+            .username {
+                display: flex;
+                float:  none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-weight: 700;
+                font-size: 14px;
+                text-align: left;
+                color: white;
+                margin-left: 18px;
+                
+            }
+            .tweet_text {
+                display: flex;
+                float:  none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 16px;
                 padding: 10px 0;
                 text-align: left;
-                color: white
+                color: white;
+                margin-left: 18px;
+                
+            }
+            .tweet_url {
+                display: flex;
+                float:none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 18px;
+                text-align: left;
+                font-weight: lighter;
+                margin-left: 18px;
                 
             }
             .background {
-                background-image: url(Images/chalkboard.jpg);
-                background-repeat: no-repeat;
-                background-size:100%;
+                /* background-image: url(Images/chalkboard.jpg); */
+                background-color: rgb(41, 40, 40);
+                
+                background-size:auto;
+            }
+
+            .filters {
+                display: block;
+                font-family: 'Trebuchet MS', sans-serif;
+                width: 425px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .filters .select {
+                size:30px;
+                float: left;
+                font-family: 'Trebuchet MS', sans-serif;
+                margin-left: 10%;
+                margin-right: auto;
+                background: transparent;
+                border: none;
+                color: white;
+                opacity: 50%;
+            }
+            .results_container {
+                /* background-color: rgba(65, 65, 65, 0.5); */
+                width: 50%;
+                float: left;
+                text-align: center;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 20px;
+                color: white;
+            }
+            .analytics_container {
+                width: 50%;
+                float: left;
+                position: relative;
+                text-align: center;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 20px;
+                color: white;
+            }
+            .resultsanalytics_container {
+                width: 100%;
+                display:table;
+                clear: both;
+            }
+            .results_container2 {
+                border: 2px solid rgba(128, 128, 128, 0.5);
+                border-radius: 30px;
+                background-color: rgba(128, 128, 128, 0.2);
+                margin-bottom: 10px;
+            }
+            .SET_container {
+                border: 2px solid rgba(128, 128, 128, 0.5);
+                border-radius: 30px;
+                background-color: rgba(72, 133, 237, 0.5);
+                width: 60%;
+                margin-left: 18px;
+            }
+            .translateButton {
+                background-color: transparent;
+                border: 0;
+                color: rgb(37, 37, 37);
+                cursor: pointer;
+                display: inline;
+                margin-right: 10px;
+                float: right;
+                outline: none;
+                padding: 0;
+            }
+            .translateButton :hover {
+                color: #4885ed;
+            }
+            .original_text {
+                display: flex;
+                float:  none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 13px;
+                padding: 10px 0;
+                text-align: left;
+                color: white;
+                margin-left: 18px;
+            }
+            .num_likes_retweets {
+                display: flex;
+                float: none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 11px;
+                text-align: left;
+                color: white;
+                margin-left: 80%;
+                margin-bottom: 5px;
+            }
+            .map_container {
+                font-family: 'Trebuchet MS', sans-serif;
+            }
+            .bar_container {
+                font-family: 'Trebuchet MS', sans-serif;
+            }
+            .resultTopics {
+                display: flex;
+                float: none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 12px;
+                margin-left: 25px;
+                padding: 10px 0;
+                text-align: left;
+                color: white;
+            }
+            .positive_sentiment {
+                display: flex;
+                float: none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 12px;
+                margin-left: 25px;
+                padding: 10px 0;
+                text-align: left;
+                color: green;
+            }
+            .negative_sentiment {
+                display: flex;
+                float: none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 12px;
+                margin-left: 25px;
+                padding: 10px 0;
+                text-align: left;
+                color: red;
+            }
+            .neutral_sentiment {
+                display: flex;
+                float: none;
+                font-family: 'Trebuchet MS', sans-serif;
+                font-size: 12px;
+                margin-left: 25px;
+                padding: 10px 0;
+                text-align: left;
+                color: grey;
             }
         </style>
     </head>
     <body class ="background">
-        <title>LEMMA Search</title>
+        <title>Lemma Search</title>
 
-        <img src = "Images/logo.png" width = "400" height = "150" class = "center">
+        <div class="topnav" style = 'font-family: Trebuchet MS, sans-serif;'>
+            <a class="active" href="/">Home</a>
+            <a href="/analytics.html">Analytics</a>
+            <a href="/about.html">About</a>
+        </div>
+
+        <div>
+            <img id = "logo" src = "Images/logo.png" width = "400" height = "150" class = "center">
+        </div>
 
         <br>
-        <h3>Created by: </h3> 
+
         <div>
-        <p class="names">
-            <span style = "color:#db3236; font-size: 24px;">E</span>den,
-            <span style = "color:#f4c20d; font-size: 24px;">M</span>ichael,
-            <span style = "color:#4885ed; font-size: 24px;">M</span>agali,
-            <span style = "color:#3cba54; font-size: 24px;">A</span>li
-        </p>
+            <h3 id="created">Created by: </h3> 
+            <p class="names" id="names">
+            The
+            <span style = "color:#4885ed; font-size: 30px;">L</span>inguists:  
+            <span style = "color:#db3236; font-size: 30px;">E</span>den,
+            <span style = "color:#f4c20d; font-size: 30px;">M</span>ichael,
+            <span style = "color:#4885ed; font-size: 30px;">M</span>agali,
+            <span style = "color:#3cba54; font-size: 30px;">A</span>li
+            </p>
         </div>
-        <div class="topnav">
+
         <div class ="search-container">
             <input type="text" placeholder="Search..." id='searchbar'>
             <button type="submit" onClick="sendQuery();" id="button1"><i class="fa fa-search"></i></button>
         </div>
-        </div>
         <br>
-        <div id='results'></div>
+        <div id = 'filters'  class = "filters">
+            <select name="Language" id="LangFilter" class="select">
+                <option value="text" disabled selected>Select your language..</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="hi">Hindi</option>
+            </select>
+            <select name="Retweets" id="retweetFilter" class = "select">
+                <option value="True" disabled selected>Include Retweets?</option>
+                <option value="True">Yes</option>
+                <option value="False">No</option>
+            </select>
+            <!-- <select name="Filter3" id="Filter3" class = "select">
+                <option value="" disabled selected>Placeholder Text</option>
+                <option value="True">Option 1</option>
+                <option value="False">Option 2</option>
+            </select> -->
+
+        </div>
+        <br> <br> <br>
+        <div id = 'results+analytics' class = 'resultsanalytics_container'>
+            <div id = 'results_container' class = 'results_container'>
+                Search Results <br> <hr style = 'width:70%; opacity: 50%;'>
+                <div id='results'></div>
+            </div>
+            <div id='analytics_container' class = 'analytics_container'>
+                Analytics <br> <hr style = 'width:70%; opacity: 50%;'>
+            </div>
+            
+            <div id='analytics' class = 'analytics_container'>
+                <div id = "map_container" class = 'map_container'></div>
+                <div id = "bar_container" class = 'bar_container'></div>
+            </div>
+        </div>
         <script>
             var input = document.getElementById("searchbar");
             input.addEventListener("keyup", function(event) {

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="Static/ajax.js"></script>
+        <script src = "Static/analytics.js"></script>
+        <script src="https://cdn.plot.ly/plotly-2.6.3.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+            .background {
+                background-color: rgb(41, 40, 40);
+                background-size:auto;
+            }
+            .center {
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+            .topnav {
+                overflow: hidden;
+                background-color: rgba(169, 169, 169, 0.473);
+                margin-right: auto;
+                border-radius: 30px;
+                opacity: 70%;
+            }
+
+            .topnav a {
+                float: left;
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+                font-size: 17px;
+            }
+
+            .topnav a:hover {
+                background-color: #ddd;
+                color: black;
+
+            }
+
+            .topnav a.active {
+                background-color: #2196F3;
+                color: white;
+            }    
+            
+            .sunburst_container {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .pie_container {
+                display: block;
+                margin-left: 35%;
+                margin-right: auto;
+            }
+            .stacked_bar {
+                display: block;
+                margin-left: 25%;
+                margin-right: 20%;
+            }
+            .plot_container {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .words_per_topic_plots {
+                float: left;
+                display: block;
+            }
+            .words_per_topic_container {
+                background-color: black;
+                border: black;
+                margin-left: 14%;
+                display: block;
+            }
+            .words_per_topic_container_container {
+                margin-top: 30px;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                display: block;
+                width: 80%;
+                /* border: 2px solid rgba(209, 8, 8, 0.5);
+                border-radius: 30px;
+                background-color: rgb(13, 48, 163); */
+                margin-bottom: 10px;
+                color: white;
+                font-family: 'Trebuchet MS', sans-serif;
+            }
+            .sunburst_container_container {
+                margin-top: 30px;
+                margin-left: 35%;
+                margin-right: auto;
+                display: block;
+                /* border: 2px solid rgba(209, 8, 8, 0.5);
+                border-radius: 30px;
+                background-color: rgb(13, 48, 163); */
+                margin-bottom: 10px;
+                color: white;
+                font-family: 'Trebuchet MS', sans-serif;
+            }
+        </style>
+    </head>
+    <body class = "background" onload="plots()">
+        <title>Lemma Analytics</title>
+        <div class="topnav" style = 'font-family: Trebuchet MS, sans-serif;'>
+            <a href="/">Home</a>
+            <a class = "active" href="/analytics.html">Analytics</a>
+            <a href="/about.html">About</a>
+          </div>
+          <!-- <div>
+            <img id = "logo" src = "Images/wordCloud2.png" width = "300" height = "300" class = "center">
+          </div> -->
+          <div id = 'plot_container' class = 'plot_container'>
+            <div id = 'pie_container' class = 'pie_container'></div>
+            <div id = 'stacked_bar' class = 'stacked_bar'></div>
+            <br><br>
+            <div class = 'sunburst_container_container'>
+                <h3 style = 'margin-left: 12%;'>Topics Tweeted About Per POI</h3>
+                <div id = 'sunburst_container' class = 'sunburst_container'></div>
+            </div>    
+            </div>
+            <div class="words_per_topic_container_container">
+                <h3>Top 5 Most Frequent Words by Topic</h3>
+                <div id = 'words_per_topic_container' class = 'words_per_topic_container'>
+                    
+                </div>
+            </div>    
+
+    </body>
+</html>

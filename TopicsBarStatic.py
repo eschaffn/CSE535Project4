@@ -8,6 +8,14 @@ jsonFile = open("words_per_topic.json", "r")
 words_per_topic = json.load(jsonFile)
 jsonFile.close()
 
+COLORS = {
+1: '#4885ed',
+2: "#db3236",
+3: "f4c20d",
+4: "4885ed",
+5: "3cba54"
+}
+
 # Sort lists in descending order
 g = []
 for k in words_per_topic.keys(): 
@@ -40,22 +48,29 @@ def getValuesLabels(k):
 
 
 def wordsTopicData():
-    data = {}
-    
+    data = []
+    colors = []
+    for i in range(1,6):
+        colors.append(COLORS[i])
+
     for k in words_per_topic.keys():
         values, labels = getValuesLabels(new_dic[k])
-        
+        values.reverse()
+        labels.reverse()
+        colors.reverse()
         d = {
         'type': 'bar',
         'x': values,
         'y': labels,
-        'orientation': 'h'
+        'orientation': 'h',
+        'marker': {
+            'color': colors
+        }
         }
         
         d_name = 'data_words_per_topics_' + k
         
-        data.update({d_name:d})
-    
+        data.append([d])
     return data
 
 

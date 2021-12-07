@@ -6,13 +6,32 @@ import App
 @bottle.route("/")
 def serve_html():
     return bottle.static_file("homepage.html", root = '')
-@bottle.route("/front_end.js")
+    
+@bottle.route("/Static/Homepage.js")
 def serve_front_end():
-    return bottle.static_file("front_end.js", root = '')
+    return bottle.static_file("Static/Homepage.js", root = '')
 
-@bottle.route("/ajax.js")
+@bottle.route("/Static/ajax.js")
 def serve_AJAX():
-    return bottle.static_file("ajax.js", root = '')
+    return bottle.static_file("Static/ajax.js", root = '')
+
+@bottle.route("/Static/analytics.js")
+def serve_analyticsJS():
+    return bottle.static_file('Static/analytics.js', root = '')
+
+@bottle.route("/analytics.html/Static/ajax.js")
+def serve_analyticsAJAX():
+    return bottle.static_file('Static/ajax.js', root = '')
+
+@bottle.route("/Images/wordCloud2.png")
+def serve_wordCloud2():
+    return bottle.static_file('Images/wordCloud2.png', root = '')
+
+@bottle.route("/analytics.html/plots")
+def serve_piechart():
+    results = App.run_plots()
+    print(json.dumps(results))
+    return json.dumps(results)
 
 @bottle.route("/Images/logo.png")
 def serve_logo():
@@ -22,11 +41,29 @@ def serve_logo():
 def background():
     return bottle.static_file("Images/chalkboard.jpg", root = '')
 
+@bottle.route("/analytics.html")
+def serve_analytics():
+    return bottle.static_file('analytics.html', root = '')
+
+@bottle.route("/about.html")
+def serve_about():
+    return bottle.static_file('about.html', root = '')
+
 @bottle.post("/search")
 def serve_query_data():
     content = bottle.request.body.read().decode()
     content = json.loads(content)
+
     results = App.fetchResults(content)
-    print(json.dumps(results))
-    print(type(json.dumps(results)))
+
+
+
+    return json.dumps(results)
+
+@bottle.post("/translate")
+def serve_translate_data():
+    content = bottle.request.body.read().decode()
+    content = json.loads(content)
+    results = App.returnTranslation(content)
+
     return json.dumps(results)
