@@ -144,6 +144,7 @@ def sunburstData():
 
 
     return data
+    '''
     return [{'type': 'sunburst',
   'ids': ['USA',
    'Mexico',
@@ -367,3 +368,4 @@ def sunburstData():
   'outsidetextfont': {'size': 20, 'color': '#377eb8'},
   'leaf': {'opacity': 0.4},
   'marker': {'line': {'width': 2}}}]
+  '''
