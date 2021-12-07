@@ -3,9 +3,11 @@
 
 import json
 
-jsonFile = open("tweets9_10.json", "r") 
-docs = json.load(jsonFile)
-jsonFile.close()
+def getDocs():
+    jsonFile = open("tweets9_10.json", "r") 
+    docs = json.load(jsonFile)
+    jsonFile.close()
+    return docs
 
 def getDic1(docs):
     
@@ -122,6 +124,7 @@ def getParents(Dic1,Dic2):
     return list_of_parents
 
 def sunburstData():
+    docs = getDocs()
     Dic1 = getDic1(docs)
     Dic2 = getDic2(docs,Dic1)
 
