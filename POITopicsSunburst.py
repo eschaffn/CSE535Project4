@@ -4,7 +4,7 @@
 import json
 
 def getDocs():
-    jsonFile = open("tweets9_10.json", "r") 
+    jsonFile = open("tweets_no_dups.json", "r") 
     docs = json.load(jsonFile)
     jsonFile.close()
     return docs
@@ -19,7 +19,7 @@ def getDic1(docs):
         if tweet['poi_name'] != '':
             if tweet['country'] == 'USA' and tweet['poi_name'] not in usa_pois:
                 usa_pois.append(tweet['poi_name'])
-            elif tweet['country'] == 'MEIXCO' and tweet['poi_name'] not in mex_pois:
+            elif tweet['country'] == 'MEXICO' and tweet['poi_name'] not in mex_pois:
                 mex_pois.append(tweet['poi_name'])
             elif tweet['country'] == 'INDIA' and tweet['poi_name'] not in ind_pois:
                 ind_pois.append(tweet['poi_name'])
@@ -59,12 +59,12 @@ def getIds(Dic1,Dic2):
     #For each key in dic1, for each value in key, append key - value
     for k in Dic1.keys():
         for v in Dic1[k]:
-            list_of_ids.append(k + '-' + v)
+            list_of_ids.append(k + ' - ' + v)
             
     #For each key in dic2, for each value in key, append key - value
     for k in Dic2.keys():
         for v in Dic2[k]:
-            list_of_ids.append(k + '-' + v)
+            list_of_ids.append(k + ' - ' + v)
             
     return list_of_ids
 
