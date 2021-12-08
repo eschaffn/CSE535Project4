@@ -25,8 +25,8 @@ def getDic1(docs):
                 ind_pois.append(tweet['poi_name'])
     
     Dic1 = {"USA": usa_pois,
-            "Mexico": mex_pois,
-            "India": ind_pois,
+            "MEXICO": mex_pois,
+            "INDIA": ind_pois,
             }
         
     return Dic1
