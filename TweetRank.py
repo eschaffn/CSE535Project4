@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     # load dataset, add TweetRank values, and save dataset
     print("Process complete! Saving TweetRank(TM) values to \'tweets_tr.json\'")
-    with open('tweets.json') as f4:
+    with open(fp + 'tweets.json') as f4:
         data = json.load(f4)
 
     for d in data:
