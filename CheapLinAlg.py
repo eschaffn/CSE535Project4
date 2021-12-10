@@ -1,5 +1,7 @@
 import torch
 
+gpu = False
+
 
 class CheapVector:
     def __init__(self):
@@ -66,20 +68,27 @@ class CheapSquareMatrix:
     def as_linear_map(self, v, right=True):
         get_vec = self.get_row_vec if right else self.get_col_vec
         vec = torch.tensor([torch.vdot(v, get_vec(self.elems[i])).item() for i in range(len(self.elems))], dtype=torch.float32)
-        vec.cuda()
+
+        if gpu:
+            vec.cuda()
 
         return vec
 
     # returns e^th row vector
     def get_row_vec(self, e):
-        vlist = [self.get_entry(e, self.elems[i]) for i in range(len(self.elems))]
+        vec = torch.tensor([self.get_entry(e, self.elems[i]) for i in range(len(self.elems))], dtype=torch.float32)
 
-        return torch.tensor(vlist, dtype=torch.float32)
+        if gpu:
+            vec.cuda()
+
+        return vec
 
     # returns e^th column vector
     def get_col_vec(self, e):
         vec = torch.tensor([self.get_entry(self.elems[i], e) for i in range(len(self.elems))], dtype=torch.float32)
-        vec.cuda()
+
+        if gpu:
+            vec.cuda()
 
         return vec
 
@@ -107,6 +116,8 @@ class CheapSquareMatrix:
 # re-creates state vector from json file
 def vec_from_json(vlist):
     vec = torch.tensor(vlist, dtype=torch.float32)
-    vec.cuda()
+
+    if gpu:
+        vec.cuda()
 
     return vec
