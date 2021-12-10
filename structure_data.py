@@ -1,131 +1,150 @@
+"""
+This is the program for creating the transition probability matrix for TweetRank calculation
+"""
+
 import json
-import copy
 import CheapLinAlg as cla
 
 
+fp = "C:/Users/mjsul/Desktop/"
+
+
+# "Node" = graph vertex
 class Node:
     def __init__(self, label):
-        self.label = label
-        self.btr = 1
-        self.tr = 1
+        self.label = label  # tweet ID
+        self.btr = 1  # Base TweetRank
+        self.tr = 0  # TweetRank
 
     def beta(self, n):
-        return self.btr / (self.btr + n.btr)
+        return n.btr / (self.btr + n.btr)
 
 
 class Graph:
+    # initialize graph structure
     def __init__(self, nodes, tweet_dict):
         self.nodes = nodes
         self.tweet_dict = tweet_dict
-        self.qts = set()
-        self.rts = set()
         self.comments = set()
         self.hashtags = {}
-        self.gen_struct()
 
-        self.w_q = 0
-        self.w_r = 0
-        self.w_c = 0
-        self.w_h = 0
-        self.teleport = 0
+        self.w_rt = .7  # retweet weight
+        self.w_l = .5  # like weight
+        self.w_c = 2  # comment weight
+        self.w_h = 1  # hashtag weight
+        self.teleport = .1  # teleport probability
 
         self.index = {}
+        ht_index = {}
 
+        print("   Creating reply graph edges, calculating \"Base TweetRank\", and structuring hashtag data...")
         for n in self.nodes:
             self.index.update({n.label: n})
+            # get tweet object n_tw from tweet id n.label
+            n_tw = self.tweet_dict[n.label]
+            # calculate Base TweetRank of n
+            n.btr += (n_tw['num_likes'] * self.w_l) + (n_tw['num_retweets'] * self.w_rt)
 
-    def gen_struct(self):
+            # if n_tw is a comment on some tweet m_tw, add a graph edge n -> m
+            if n_tw['reply_to'] and not n_tw['reply_to'] == "":
+                if int(n_tw['reply_to']) in self.tweet_dict.keys():
+                    self.comments.add((n.label, int(n_tw['reply_to'])))
+
+            # for each hashtag h in n_tw, append n to the "hashtag index" of h; the list of all tweets (IDs) containing h
+            for h in n_tw['hashtags']:
+                if h in ht_index.keys():
+                    ht_index[h].append(n)
+                else:
+                    ht_index.update({h: [n]})
+
+        print("   Creating hashtag graph edges...")
         for n in self.nodes:
-            n_tw = self.tweet_dict[n]
+            # iterate over each hashtag h in the tweet
+            for h in self.tweet_dict[n.label]['hashtags']:
+                # iterate over all tweets m that use the hashtag h
+                for m in ht_index[h]:
+                    if not m == n:
+                        # add 1 to the weight of the graph edge n -> m
+                        # "elif (m.label, n.label) not..." ensures that we only create one edge for each pair of tweets
+                        if (n.label, m.label) in self.hashtags.keys():
+                            self.hashtags[(n.label, m.label)] += 1
+                        elif (m.label, n.label) not in self.hashtags.keys():
+                            self.hashtags.update({(n.label, m.label): 1})
 
-            for m in [x for x in self.nodes if not x == n]:
-                if (n.label, m.label) not in self.hashtags.keys():
-                    m_tw = self.tweet_dict[m]
+        # attempting to get garbage collector to reallocate ht_index
+        ht_index = None
 
-                    if m_tw['quote_tweet'] == n:
-                        self.qts.add((m.label, n.label))
+    def calc_tm_dict(self):
+        # initialize an NxN CheapSquareMatrix, where N = num. of tweets in dataset
+        mat = cla.CheapSquareMatrix(elems=[n.label for n in self.nodes])
 
-                    if m_tw['retweet'] == n:
-                        self.rts.add((m.label, n.label))
-
-                    if m_tw['reply_to'] == n:
-                        self.comments.add((m.label, n.label))
-
-                    common_hashtags = 0
-
-                    for n_h in n_tw['hashtags']:
-                        for m_h in m_tw['hashtags']:
-                            if n_h == m_h:
-                                common_hashtags += 1
-
-                    self.hashtags.update({(m.label, n.label): common_hashtags})
-
-    def calc_tr(self):
-        node_labels = [n.label for n in self.nodes]
-        og_mat = cla.CheapSquareMatrix(node_labels)
-
-        # rows[a][b] != 0 => a quote-tweets b
-        for (a, b) in self.qts:
-            og_mat.update_entry(a, b, og_mat.get_entry(a, b) + self.w_q)
-
-        # rows[a][b] != 0 => a retweets b
-        for (a, b) in self.rts:
-            og_mat.update_entry(a, b, og_mat.get_entry(a, b) + self.w_r)
-
+        print("   Adding reply values...")
         # rows[a][b] != 0 => a comments on b
         for (a, b) in self.comments:
-            og_mat.update_entry(a, b, og_mat.get_entry(a, b) + self.w_c)
+            mat.update_entry(a, b, self.w_c * self.index[a].beta(self.index[b]))
 
-        og_mat_copy = copy.deepcopy(og_mat)
-        btr_vals = self.find_steady_vec(og_mat)
+        print("   Adding hashtag values...")
+        # for each weighted edge i -> j, add a "graph edge" to the transition matrix at entries P(i,j) and P(j,i),
+        # weighted by relative Base TweetRank
+        for (a, b) in self.hashtags.keys():
+            wgt = self.hashtags[(a, b)] * self.w_h
+            beta = self.index[a].beta(self.index[b])
+            mat.update_entry(a, b, mat.get_entry(a, b) + (wgt * beta))
+            mat.update_entry(b, a, mat.get_entry(b, a) + (wgt * (1 - beta)))
 
-        for i in range(len(btr_vals)):
-            self.index[node_labels[i]].btr = btr_vals[i]
+        self.hashtags = None
+        self.comments = None
+        print("   Normalizing transition matrix into ergodic Markov chain...")
+        # adaptation of PageRank transition matrix algorithm described in textbook
+        mat.zero_val = 1 / len(mat.elems)  # <== corresponds to performing step 1 of textbook procedure
+        cons_zv = self.teleport / len(mat.elems)
 
-        for n in self.nodes:
-            for m in [x for x in self.nodes if not x == n]:
-                if (n.label, m.label) in self.hashtags.keys():
-                    wgt = self.hashtags[(n.label, m.label)] * self.w_h
-                    og_mat_copy.update_entry(n.label, m.label, og_mat.get_entry(n.label, m.label) + (wgt * m.beta(n)))
-                    og_mat_copy.update_entry(m.label, n.label, og_mat.get_entry(m.label, n.label) + (wgt * n.beta(m)))
-
-        tr_vals = self.find_steady_vec(og_mat_copy)
-
-        for i in range(len(tr_vals)):
-            self.index[node_labels[i]].tr = tr_vals[i]
-
-    def find_steady_vec(self, mat):
         for x in mat.row_index.keys():
             total = 0
+            # corresponds to performing steps 2-4 of textbook procedure on all empty entries of the row
+            mat.row_index[x].zero_val = cons_zv
 
-            for y in mat.row_index[x].keys():
-                total += mat.row_index[x][y]
+            # sum together each non-zero entry of given row
+            for y in mat.row_index[x].index.keys():
+                total += mat.row_index[x].index[y]
 
-            for y in mat.row_index[x].keys():
-                mat.row_index[x][y] = mat.row_index[x][y] / total
+            # corresponds to performing steps 2-4 of textbook procedure on all NON-empty entries of the row
+            for y in mat.row_index[x].index.keys():
+                mat.update_entry(x, y, ((mat.row_index[x].index[y] / total) * (1 - self.teleport)) + cons_zv)
 
-        mat.scalar_mul(1 - self.teleport)
-        mat.add_matrix_of_ns(self.teleport / len(self.nodes))
-        init_vec = cla.CheapVector(mat.elems)
-        init_vec.add_uniform_vec(1 / len(self.nodes))
-
-        for i in range(50):
-            init_vec = mat.as_linear_map(init_vec, right=False)
-
-        return init_vec.tolist()
+        # return json-serializable representation of transition matrix
+        return mat.to_json()
 
 
 if __name__ == "__main__":
-    with open('tweets.json') as f:
+    # load dataset
+    with open(fp + 'tweets.json') as f:
         data = json.load(f)
 
     tweet_dictionary = {}
     tw_ids = []
 
+    # iterate over dataset and create graph node for each tweet, along with dictionary entry linking the id to the tweet
     for d in data:
-        id = d['id']
-        tweet_dictionary.update({id: d})
-        tw_ids.append(Node(id))
+        tw_id = d['id']
+        tweet_dictionary.update({tw_id: d})
+        tw_ids.append(Node(tw_id))
 
+    print("Updating Twitter graph structure:")
+    # create Twitter graph structure
     grp = Graph(tw_ids, tweet_dictionary)
-    grp.calc_tr()
+    print("Done!\n\nCreating transition matrix:")
+    # calculate json-serializable transition matrix
+    mat_json = grp.calc_tm_dict()
+
+    # save transition matrix and initial state vector to json files
+    print("Done!\n\nSaving to \'transition_matrix.json\'...")
+    with open(fp + 'transition_matrix.json', 'w') as f2:
+        json.dump(mat_json, f2)
+
+    with open(fp + 'tr_data.json', 'w') as f3:
+        json.dump({
+            'iterations': 0,
+            'epochs': 50,
+            'steady_vector': [(1 / len(mat_json['elems'])) for x in mat_json['elems']]
+        }, f3)
