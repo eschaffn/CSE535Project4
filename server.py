@@ -30,7 +30,6 @@ def serve_wordCloud2():
 @bottle.route("/analytics.html/plots")
 def serve_piechart():
     results = App.run_plots()
-    print(json.dumps(results))
     return json.dumps(results)
 
 @bottle.route("/Images/logo.png")
@@ -49,14 +48,15 @@ def serve_analytics():
 def serve_about():
     return bottle.static_file('about.html', root = '')
 
+@bottle.route("/lda_10Topics.html")
+def serve_lda():
+    return bottle.static_file('lda_10Topics.html', root = '')
+
 @bottle.post("/search")
 def serve_query_data():
     content = bottle.request.body.read().decode()
     content = json.loads(content)
-
     results = App.fetchResults(content)
-
-
 
     return json.dumps(results)
 

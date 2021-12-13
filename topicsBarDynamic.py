@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 
-jsonFile = open("tweets9_10.json", "r") 
+jsonFile = open("tweets12.json", "r") 
 data = json.load(jsonFile) 
 jsonFile.close()
 
@@ -10,12 +10,14 @@ jsonFile.close()
 COLORS = {
 1: '#4885ed',
 2: "#db3236",
-3: "f4c20d",
-4: "4885ed",
-5: "3cba54",
+3: "#f4c20d",
+4: "#4885ed",
+5: "#3cba54",
 6: '#4885ed',
 7: "#db3236",
-8: "f4c20d"
+8: "#f4c20d",
+9: "#4885ed",
+10: "#3cba54"
 }
 # Docs is the list of results from the search
 # I'm assuming it's a list of dictionaries just like data

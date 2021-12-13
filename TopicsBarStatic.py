@@ -68,7 +68,6 @@ def wordsTopicData():
         }
         }
         
-        d_name = 'data_words_per_topics_' + k
         
         data.append([d])
     return data

@@ -7,6 +7,7 @@ var pie = R.piechart_data
 var sunburst = R.sunburst_data
 var words_per_topic_container = document.getElementById('words_per_topic_container')
 var words_per_topic = R.words_per_topic_data
+var bubblechart = R.bubblechart_data
 
 var piedata = [{
     values: pie.values,
@@ -39,33 +40,48 @@ var sunburstlayout = {
    }
 var stackedbartrace1 = {
     y: ['US_POI', 'US_Public', 'Mex_POI', 'Mex_Public', 'India_POI', 'India_Public'],
-    x: [1031, 4140, 1400, 3555, 735, 1275],
+    x: [203, 807, 92, 581, 232, 770],
     name: 'Pro',
     orientation: 'h',
     type: 'bar',
     marker: {
-        color: 'rgba(246, 78, 139, 0.6)',
+        color: 'rgba(72, 133, 237, 0.6)',
         line: {
-            color: 'rgba(246, 78, 139, 1.0)',
+            color: 'rgba(55, 53, 54, 1)',
             width: 3
         }
     }
 }
-var stackedbartrace2 = {
+var stackedbartrace3 = {
     y: ['US_POI', 'US_Public', 'Mex_POI', 'Mex_Public', 'India_POI', 'India_Public'],
-    x: [781, 15000, 701, 4407, 451, 522],
+    x: [41, 1070, 12, 691, 13, 295],
     name: 'Against',
     orientation: 'h',
     type: 'bar',
     marker: {
-        color: 'rgba(58, 71, 80, 0.6)',
+        color: 'rgba(219, 50, 54, 0.6)',
         line: {
-            color: 'rgba(258, 71, 80, 1.0)',
+            color: 'rgba(55, 53, 54, 1)',
             width: 3
         }
     }
 }
-var stackedbardata = [stackedbartrace1, stackedbartrace2]
+
+var stackedbartrace2 = {
+    y: ['US_POI', 'US_Public', 'Mex_POI', 'Mex_Public', 'India_POI', 'India_Public'],
+    x: [134, 1001, 54, 627, 121, 616],
+    name: 'Neutral',
+    orientation: 'h',
+    type: 'bar',
+    marker: {
+        color: 'rgba(60, 186, 84, 0.6)',
+        line: {
+            color: 'rgba(55, 53, 54, 1)',
+            width: 3
+        }
+    }
+}
+var stackedbardata = [stackedbartrace1, stackedbartrace2, stackedbartrace3]
 var stackedbarlayout = {
     barmode: 'stack',
     paper_bgcolor: 'rgba(0, 0, 0, 0)',
@@ -77,16 +93,19 @@ var stackedbarlayout = {
     title: 'Distribution of Detected Stances Towards Vaccines'
 }
 
-const words_per_topic_titles = {
-    0: 'Covid',
-    1: 'Covid cases and omicron',
-    2: 'India fight corona',
-    3: 'Hospital and medications',
-    4: 'Tests and travel',
-    5: 'Social distancing and masks',
-    6: 'Covid and economy'
-}
 
+const words_per_topic_titles = {
+    0:'Corona_Masks_Government',
+    1:'Immunity_Positive_South_Africa',
+    2:'Hospital_Health',
+    3:'Coronavirus',
+    4:'India_Covid_Cases',
+    5:'Omicron_Variant',
+    6:'Symptoms_Lockdown',
+    7:'Travel_Quarantine',
+    8:'Social_Distance',
+    9:'Covid_Vaccination',
+}
 var k = '1'
 for (var i = 0; i < words_per_topic.length; i++) {
     var words_per_topic_layout = {
@@ -107,9 +126,18 @@ for (var i = 0; i < words_per_topic.length; i++) {
     k += 1
 };
 
+var bubblechartlayout = {
+    title: 'Stance Towards Vaccines Graphed Against Covid Cases per Day',
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    plot_bgcolor: 'rgba(128, 128, 128, 0.3)',
+    font: {
+        color: 'white'
+    }
+}
 Plotly.newPlot('pie_container', piedata, pielayout);
 Plotly.newPlot('stacked_bar', stackedbardata, stackedbarlayout)
 Plotly.newPlot('sunburst_container', sunburstdata, sunburstlayout)
+Plotly.newPlot('bubblechart_container', bubblechart, bubblechartlayout)
 }
 
 

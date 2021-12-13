@@ -3,7 +3,7 @@
 
 import json
 
-jsonFile = open("tweets9_10.json", "r") 
+jsonFile = open("tweets12.json", "r") 
 data = json.load(jsonFile) 
 jsonFile.close()
 

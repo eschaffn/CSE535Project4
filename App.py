@@ -3,22 +3,25 @@ import urllib.request, urllib.parse
 import random 
 import TopicsBarStatic
 import topicsBarDynamic
-import POITopicsSunburst
+import POITopicsSunburst3
 import emotionsPie
+import bubblechart
 
-aws_ip = 'ec2-18-117-90-175.us-east-2.compute.amazonaws.com'
+aws_ip = 'ec2-18-188-22-27.us-east-2.compute.amazonaws.com'
 corename = 'LEMMA'
 
 TOPIC_NAMES = {
-'Covid': "rgb(21, 247, 21)",
-'Covid cases and omicron': "rgb(21, 247, 240)",
-'India fight corona': "rgb(247, 21, 51)",
-'Hospital and medications': "rgb(247, 179, 21)",
-'Tests and travel': "rgb(247, 21, 134)",
-'Social distancing and masks': "rgb(247, 142, 21)",
-'Covid and economy': "rgb(21, 247, 81)",
-'Vaccination': "#db3236",
-'Non Covid Related': "rgb(0, 0, 0)"
+'1_Corona_Masks_Government': "rgb(21, 247, 21)",
+'2_Immunity_Positive_South_Africa': "rgb(21, 247, 240)",
+'3_Hospital_Health': "rgb(247, 21, 51)",
+'4_Coronavirus': "rgb(247, 179, 21)",
+'5_India_Covid_Cases': "rgb(247, 21, 134)",
+'6_Omicron_Variant': "rgb(247, 142, 21)",
+'7_Symptoms_Lockdown': "rgb(21, 247, 81)",
+'8_Travel_Quarantine': "#db3236",
+'9_Social_Distance': "rgb(0, 0, 0)",
+'10_Covid_Vaccination': "rgb(0,0,0)",
+'Non_Covid': "rgb(56, 56, 56)"
 }
 
 
@@ -205,19 +208,24 @@ def fetchResults(data):
                     'sentiment': doc['sentiment']
                     }})
     response.append({'topic_bar_data': topicsBarDynamic.barData(docs)})
-    print(response)
+
+    print('-'*20)
+    print(f'A user searched for: {query}')
+    print(f'Search Returning {len(response)-1} Results')
+    print('-' *20)
+
     return(response)
 
 def run_plots():
-    
     response = {}
-    sunburst_data = POITopicsSunburst.sunburstData()
+    sunburst_data = POITopicsSunburst3.sunburstData()
     piechart_data = emotionsPie.pieData()
     words_per_topic_data = TopicsBarStatic.wordsTopicData()
+    bubblechart_data = bubblechart.bubblechartData()
 
     response.update({'words_per_topic_data': words_per_topic_data})
     response.update({'sunburst_data': sunburst_data})
     response.update({'piechart_data': piechart_data})
+    response.update({'bubblechart_data': bubblechart_data})
 
-    print(response)
     return response
